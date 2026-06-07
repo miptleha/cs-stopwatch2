@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Stopwatch2.csproj",
+        "${workspaceFolder}/Stopwatch2/Stopwatch2.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/Stopwatch2.csproj"
+        "${workspaceFolder}/Stopwatch2/Stopwatch2.csproj"
       ],
       "problemMatcher": []
     },
@@ -29,7 +29,7 @@
       "type": "process",
       "args": [
         "clean",
-        "${workspaceFolder}/Stopwatch2.csproj"
+        "${workspaceFolder}/Stopwatch2/Stopwatch2.csproj"
       ],
       "problemMatcher": []
     }
