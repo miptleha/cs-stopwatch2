@@ -28,3 +28,5 @@ Main differences from the standard [Stopwatch](https://learn.microsoft.com/en-us
 - A [stub](Stopwatch2/Test5.cs) is included to prevent Stopwatch2 code from being executed
 - Simple mode in which Stopwatch2 turns into a standard Stopwatch
 - [Fast](Stopwatch2/Test6.cs) execution even with millions of tasks
+
+[![hits](https://myhits.vercel.app/api/hit/https%3A%2F%2Fgithub.com%2Fmiptleha%2Fcs-stopwatch2?color=blue&label=hits&size=small)](https://myhits.vercel.app)
