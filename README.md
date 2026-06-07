@@ -4,7 +4,7 @@ A stopwatch for measuring the speed of multiple tasks.
 Open the console application to see usage examples (`VS 2026`, `VS 2022`, `VS Code`).  
 To use, copy [Stopwatch2.cs](Stopwatch2/Stopwatch2.cs) into your project (it compiles even in earlier versions of `.NET`).
 
-Usage [example](Test0.cs):  
+Usage [example](Stopwatch2/Test0.cs):  
 ```csharp
 var sw = Stopwatch2.StartNew();
 var t = sw.Start("Task");
