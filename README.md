@@ -1,6 +1,7 @@
 ## Stopwatch2
 
 A stopwatch for measuring the speed of multiple tasks.  
+Hierarchical, thread-safe, configurable output.  
 Open the console application to see usage examples (`VS 2026`, `VS 2022`, `VS Code`).  
 To use, copy [Stopwatch2.cs](Stopwatch2/Stopwatch2.cs) into your project (it compiles even in earlier versions of `.NET`).
 
@@ -28,5 +29,6 @@ Main differences from the standard [Stopwatch](https://learn.microsoft.com/en-us
 - A [stub](Stopwatch2/Test5.cs) is included to prevent Stopwatch2 code from being executed
 - Simple mode in which Stopwatch2 turns into a standard Stopwatch
 - [Fast](Stopwatch2/Test6.cs) execution even with millions of tasks
+- The [output](Stopwatch2/Test7.cs) of results can be customized
 
 [![hits](https://myhits.vercel.app/api/hit/https%3A%2F%2Fgithub.com%2Fmiptleha%2Fcs-stopwatch2?color=blue&label=hits&size=small)](https://myhits.vercel.app)
