@@ -39,24 +39,36 @@ internal partial class Tests
         Console.WriteLine();
 
         Console.WriteLine("# Hide root");
-        Console.WriteLine(sw2.Results(true));
+        Console.WriteLine(sw2.Results(new Stopwatch2Options { HideRoot = true }));
         Console.WriteLine();
 
         Console.WriteLine("# Hide percent");
-        Console.WriteLine(sw2.Results(false, true));
+        Console.WriteLine(sw2.Results(new Stopwatch2Options { HidePercent = true }));
         Console.WriteLine();
 
         Console.WriteLine("# Hide time");
-        Console.WriteLine(sw2.Results(false, false, true));
+        Console.WriteLine(sw2.Results(new Stopwatch2Options { HideTime = true }));
         Console.WriteLine();
 
         Console.WriteLine("# Hide count");
-        Console.WriteLine(sw2.Results(false, false, false, true));
+        Console.WriteLine(sw2.Results(new Stopwatch2Options { HideCount = true }));
         Console.WriteLine();
 
         Console.WriteLine("# Execution time in miliseconds");
-        Console.WriteLine(sw2.Results(false, false, false, false, true));
+        Console.WriteLine(sw2.Results(new Stopwatch2Options { MsMode = true }));
         Console.WriteLine();
+
+        Console.WriteLine("# Minimal output");
+        Console.WriteLine(sw2.Results(new Stopwatch2Options 
+        { 
+            HideRoot = true, 
+            HidePercent = true, 
+            HideTime = true, 
+            HideCount = true, 
+            MsMode = true 
+        }));
+        Console.WriteLine();
+
 
         Console.WriteLine("Stopwatch: " + sw.Elapsed);
         Console.WriteLine();

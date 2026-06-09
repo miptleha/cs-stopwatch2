@@ -56,16 +56,27 @@ namespace Misc
         }
 
         ///<summary>Stopwatch results in text form</summary>
-        ///<param name="hideRoot">Hide root</param>
-        ///<param name="hidePercent">Hide percent</param>
-        ///<param name="hideTime">Hide time</param>
-        ///<param name="hideCount">Hide count</param>
-        ///<param name="msMode">Execution time in miliseconds</param>
-        public string Results(bool hideRoot = false, bool hidePercent = false, bool hideTime = false, bool hideCount = false, bool msMode = false)
+        ///<param name="opt">Display options</param>
+        public string Results(Stopwatch2Options opt = null)
         {
             _root.Stop();
-            return _root.Results(0, _root.Elapsed, hideRoot, hidePercent, hideTime, hideCount, msMode);
+            opt = opt ?? new Stopwatch2Options();
+            return _root.Results(0, _root.Elapsed, opt.HideRoot, opt.HidePercent, opt.HideTime, opt.HideCount, opt.MsMode);
         }
+    }
+
+    public class Stopwatch2Options
+    {
+        ///<summary>Hide root</summary>
+        public bool HideRoot = false;
+        ///<summary>Hide percent</summary>
+        public bool HidePercent = false;
+        ///<summary>Hide time</summary>
+        public bool HideTime = false;
+        ///<summary>Hide count</summary>
+        public bool HideCount = false;
+        ///<summary>Execution time in miliseconds</summary>
+        public bool MsMode = false;
     }
 
     ///<summary>Stopwatch for one task</summary>
