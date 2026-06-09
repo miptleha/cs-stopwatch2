@@ -9,6 +9,8 @@ Tests.Test2(true);
 Tests.Test3(false);
 Tests.Test3(true);
 
+Tests.Test3_2();
+
 Tests.Test4(false);
 Tests.Test4(true);
 
@@ -17,3 +19,6 @@ Tests.Test5(true);
 
 Tests.Test6(false);
 Tests.Test6(true);
+
+Tests.Test7(false);
+Tests.Test7(true);

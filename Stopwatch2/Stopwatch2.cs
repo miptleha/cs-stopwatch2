@@ -49,27 +49,34 @@ namespace Misc
         {
             if (_simpleMode)
                 return Stopwatch2Task.Dummy;
-            
+
             var t = new Stopwatch2Task(name, _root);
             t.Start();
             return t;
         }
 
         ///<summary>Stopwatch results in text form</summary>
-        public string Results()
+        ///<param name="hideRoot">Hide root</param>
+        ///<param name="hidePercent">Hide percent</param>
+        ///<param name="hideTime">Hide time</param>
+        ///<param name="hideCount">Hide count</param>
+        ///<param name="msMode">Execution time in miliseconds</param>
+        public string Results(bool hideRoot = false, bool hidePercent = false, bool hideTime = false, bool hideCount = false, bool msMode = false)
         {
-            return _root.Results(0, _root.Elapsed);
+            _root.Stop();
+            return _root.Results(0, _root.Elapsed, hideRoot, hidePercent, hideTime, hideCount, msMode);
         }
     }
 
     ///<summary>Stopwatch for one task</summary>
-    public class Stopwatch2Task: IDisposable
+    public class Stopwatch2Task : IDisposable
     {
         Dictionary<string, Stopwatch2Task> _children = new Dictionary<string, Stopwatch2Task>();
         Stopwatch2Task _parent;
         string _name;
         Stopwatch _sw;
         TimeSpan _time = TimeSpan.Zero;
+        int _cnt = 1;
         static object _lock = new object();
         static Stopwatch2Task _dummy = new Stopwatch2Task(null, null);
 
@@ -101,8 +108,11 @@ namespace Misc
             if (this == _dummy)
                 return;
 
+            if (!_sw.IsRunning)
+                return;
+
             _sw.Stop();
-            
+
             lock (_lock)
             {
                 _time += _sw.Elapsed;
@@ -124,6 +134,7 @@ namespace Misc
             {
                 var c = _children[t._name];
                 c._time += t._time;
+                c._cnt += t._cnt;
                 foreach (var v in t._children.Values)
                 {
                     c.AddChild(v);
@@ -138,23 +149,42 @@ namespace Misc
             if (this == _dummy)
                 return _dummy;
 
-            var t =  new Stopwatch2Task(name, this);
+            var t = new Stopwatch2Task(name, this);
             t.Start();
             return t;
         }
 
         ///<summary>Stopwatch results in text form</summary>
-        public string Results(int level, TimeSpan parentElapsed)
+        public string Results(int level, TimeSpan parentElapsed, bool hideSelf, bool hidePercent, bool hideTime, bool hideCount, bool msMode)
         {
-            int percent = (int)Math.Round(_time.TotalMilliseconds / parentElapsed.TotalMilliseconds * 100);
-            StringBuilder result = new StringBuilder(new string(' ', level) + _name + ": " + _time + " " + percent + "%");
+            StringBuilder result = new StringBuilder();
+            if (!hideSelf)
+            {
+                var items = new List<string>();
+                if (!hideTime)
+                {
+                    items.Add(msMode ? Math.Round(_time.TotalMilliseconds).ToString() + "ms" : _time.ToString());
+                }
+                if (!hidePercent)
+                {
+                    int percent = (int)Math.Round(_time.TotalMilliseconds / parentElapsed.TotalMilliseconds * 100);
+                    items.Add(percent + "%");
+                }
+                if (!hideCount)
+                {
+                    items.Add(_cnt.ToString());
+                }
+                string sep = items.Count == 0 ? "" : ": ";
+                result.Append(new string(' ', level) + _name + sep + string.Join(" ", items));
+            }
 
             var list = _children.Values.ToList();
             list = list.OrderByDescending(item => item._time).ToList();
             foreach (var item in list)
             {
-                result.Append("\n");
-                result.Append(item.Results(level + 1, _time));
+                if (result.Length > 0)
+                    result.Append("\n");
+                result.Append(item.Results(hideSelf ? level : level + 1, _time, false, hidePercent, hideTime, hideCount, msMode));
             }
 
             return result.ToString();
