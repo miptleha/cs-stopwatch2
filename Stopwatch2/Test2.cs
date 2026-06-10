@@ -18,6 +18,12 @@ internal partial class Tests
 
             using (var t = sw2.Start("f2"))
                 f2(t);
+
+            using (var t = sw2.Start("f1"))
+                f1();
+
+            using (var t = sw2.Start("f2"))
+                f2(t);
         }
         sw2.Stop();
         sw.Stop();

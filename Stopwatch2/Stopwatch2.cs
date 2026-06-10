@@ -18,7 +18,6 @@ namespace Misc
         /// <param name="simpleMode">Disables stopwatches for nested tasks</param>
         public Stopwatch2(bool simpleMode = false)
         {
-            _root = new Stopwatch2Task("Total time", null);
             _simpleMode = simpleMode;
         }
 
@@ -34,13 +33,14 @@ namespace Misc
         ///<summary>Starts a stopwatch</summary>
         public void Start()
         {
-            _root.Start();
+            _root = new Stopwatch2Task("Total time", null);
         }
 
         ///<summary>Stops a stopwatch</summary>
         public void Stop()
         {
-            _root.Stop();
+            if (_root != null)
+                _root.Stop();
         }
 
         ///<summary>Starts nested stopwatch for the task</summary>
@@ -51,7 +51,6 @@ namespace Misc
                 return Stopwatch2Task.Dummy;
 
             var t = new Stopwatch2Task(name, _root);
-            t.Start();
             return t;
         }
 
@@ -59,6 +58,9 @@ namespace Misc
         ///<param name="opt">Display options</param>
         public string Results(Stopwatch2Options opt = null)
         {
+            if (_root == null)
+                return null;
+
             _root.Stop();
             opt = opt ?? new Stopwatch2Options();
             return _root.Results(0, _root.Elapsed, opt.HideRoot, opt.HidePercent, opt.HideTime, opt.HideCount, opt.MsMode);
@@ -87,7 +89,7 @@ namespace Misc
         string _name;
         Stopwatch _sw;
         TimeSpan _time = TimeSpan.Zero;
-        int _cnt = 1;
+        int _cnt = 0;
         static object _lock = new object();
         static Stopwatch2Task _dummy = new Stopwatch2Task(null, null);
 
@@ -102,10 +104,11 @@ namespace Misc
             _name = name;
             _parent = parent;
             _sw = new Stopwatch();
+            Start();
         }
 
-        ///<summary>Starts a stopwatch</summary>
-        public void Start()
+        ///<summary>Starts a stopwatch, can only be called once</summary>
+        private void Start()
         {
             if (this == _dummy)
                 return;
@@ -127,6 +130,7 @@ namespace Misc
             lock (_lock)
             {
                 _time += _sw.Elapsed;
+                _cnt++;
                 if (_parent != null)
                 {
                     _parent.AddChild(this);
@@ -161,7 +165,6 @@ namespace Misc
                 return _dummy;
 
             var t = new Stopwatch2Task(name, this);
-            t.Start();
             return t;
         }
 
@@ -171,27 +174,22 @@ namespace Misc
             StringBuilder result = new StringBuilder();
             if (!hideSelf)
             {
-                var items = new List<string>();
+                int percent = (int)Math.Round(_time.TotalMilliseconds / parentElapsed.TotalMilliseconds * 100);
+                string str = "";
                 if (!hideTime)
-                {
-                    items.Add(msMode ? Math.Round(_time.TotalMilliseconds).ToString() + "ms" : _time.ToString());
-                }
+                    str += msMode ? Math.Round(_time.TotalMilliseconds).ToString() + "ms" : _time.ToString();
                 if (!hidePercent)
-                {
-                    int percent = (int)Math.Round(_time.TotalMilliseconds / parentElapsed.TotalMilliseconds * 100);
-                    items.Add(percent + "%");
-                }
+                    str += (str.Length == 0 ? "" : " ") + percent + "%";
                 if (!hideCount)
-                {
-                    items.Add(_cnt.ToString());
-                }
-                string sep = items.Count == 0 ? "" : ": ";
-                result.Append(new string(' ', level) + _name + sep + string.Join(" ", items));
+                    str += (str.Length == 0 ? "" : " ") + _cnt;
+                string sep = str.Length == 0 ? "" : ": "; 
+                result.Append(new string(' ', level) + _name + sep + str);
             }
 
-            var list = _children.Values.ToList();
-            list = list.OrderByDescending(item => item._time).ToList();
-            foreach (var item in list)
+            var sorted = _children
+                .OrderByDescending(kvp => kvp.Value._time)
+                .Select(kvp => kvp.Value);
+            foreach (var item in sorted)
             {
                 if (result.Length > 0)
                     result.Append("\n");

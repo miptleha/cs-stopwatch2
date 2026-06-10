@@ -39,4 +39,6 @@ internal partial class Tests
         Console.WriteLine("Stopwatch: " + sw.Elapsed);
         Console.WriteLine();
     }
+
+    //f1(), f2() declared in Test2.cs
 }
