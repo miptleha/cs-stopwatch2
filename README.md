@@ -17,8 +17,8 @@ Console.WriteLine(sw.Results());
 
 Execution result:  
 ```cmd
-Total time: 00:00:00.1045736 100%
- Task: 00:00:00.1033607 99%
+Total time: 00:00:00.1050561 100% 1
+ Task: 00:00:00.1040372 99% 1
 ```
 
 Main differences from the standard [Stopwatch](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch?view=net-8.0) class:
